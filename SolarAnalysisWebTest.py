@@ -49,10 +49,10 @@ if uploaded_file is not None:
     #st.write(df_generation)
     #st.write(df_tariffs)
      
-    start_date = st.date_input("Enter Start Date", value=today, min_value=min_date, max_value=max_date)
+    start_date = st.date_input("Enter Start Date", today)
     st.write("Start Date is:", start_date)
     
-    end_date = st.date_input("Enter End Date", value=today, min_value=min_date, max_value=max_date)
+    end_date = st.date_input("Enter End Date", today)
     st.write("End Date is:", end_date)
     
     no_of_days = ((end_date - start_date).days)+1

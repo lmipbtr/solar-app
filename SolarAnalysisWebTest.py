@@ -7,6 +7,7 @@ import matplotlib as mpl
 import datetime
 #from io import StringIO
 from matplotlib.dates import MonthLocator, YearLocator, DateFormatter
+from dateutil.relativedelta import relativedelta
 
 uploaded_file = st.file_uploader("Choose a file")
 if uploaded_file is not None:
@@ -44,12 +45,9 @@ if uploaded_file is not None:
     df_tariffs['Date']= pd.to_datetime(df_tariffs['Date'],format='%d/%m/%Y')
     min_date=min(df_import_export['Date'])
     max_date=max(df_import_export['Date'])
-    
-    #st.write(df_import_export)
-    #st.write(df_generation)
-    #st.write(df_tariffs)
-     
-    start_date = st.date_input("Enter Start Date", min_value = min_date, max_value = max_date)
+    default_date = max_date - relativedelta(months=1)
+  
+    start_date = st.date_input("Enter Start Date", value = default_date, min_value = min_date, max_value = max_date)
     #st.write("Start Date is:", start_date)
     
     end_date = st.date_input("Enter End Date", min_value = min_date, max_value = max_date)

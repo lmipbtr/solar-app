@@ -44,16 +44,17 @@ if uploaded_file is not None:
     df_tariffs['Date']= pd.to_datetime(df_tariffs['Date'],format='%d/%m/%Y')
     min_date=min(df_import_export['Date'])
     max_date=max(df_import_export['Date'])
- 
+    today = datetime.date.today()
+    
     #st.write(df_import_export)
     #st.write(df_generation)
     #st.write(df_tariffs)
      
-    start_date = st.date_input("Enter Start Date", min_value = min_date, max_value = max_date)
-    st.write("Start Date is:", start_date)
+    start_date = st.date_input("Enter Start Date", value = today, min_value = min_date, max_value = max_date)
+    #st.write("Start Date is:", start_date)
     
-    end_date = st.date_input("Enter End Date", min_value = min_date, max_value = max_date)
-    st.write("End Date is:", end_date)
+    end_date = st.date_input("Enter End Date", value = today, min_value = min_date, max_value = max_date)
+    #st.write("End Date is:", end_date)
     
     no_of_days = ((end_date - start_date).days)+1
     

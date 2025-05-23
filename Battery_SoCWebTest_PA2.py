@@ -87,8 +87,8 @@ if uploaded_file is not None:
             for j in range (4, cols):
                 exports = df_export.iloc[i,j]
                 imports = df_import.iloc[i,j]
-                exports_tariff = df_export_tariff.iloc[i,j]
-                imports_tariff = df_import_tariff.iloc[i,j]
+                exports_tariff = df_export_tariff.iloc[i,j+1]
+                imports_tariff = df_import_tariff.iloc[i,j+1]
                 net_energy = exports/inv_eff - imports/inv_eff/batt_eff
                 batt_soc = batt_soc + net_energy
                 if(batt_soc >= batt_size):

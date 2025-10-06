@@ -375,6 +375,22 @@ if uploaded_file is not None:
 
     st.pyplot(fig)
      
+    df_combined_profile = pd.concat([df_import_daily_profile, df_export_daily_profile, df_generation_daily_profile, df_load_daily_profile], axis=1, keys=['Imports', 'Exports', 'Generated', 'Load'])
+    x_axis_list = df_combined_profile.index.to_list()
+    x_axis_list_values = [dt_obj.strftime('%H:%M') for dt_obj in x_axis_list]
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+    df_combined_profile[['Imports', 'Exports', 'Generated','Load']].plot(kind='line', stacked=False, ax=ax1, rot=45, legend=True)
+    ax1.set_ylabel('kWhs')
+    ax1.legend()
+    ax1.set_xticks(x_axis_list_values)
+    ax1.set_xticklabels(x_axis_list_values)
+    ax1.margins(x=0)
+    plt.title('Daily kWh Hourly Profiles')
+    plt.grid(which='both', color='gray', linestyle='dashed', linewidth=0.5)
+    plt.tight_layout(pad=0.8, w_pad=0.8, h_pad=1.0)
+    
+    st.pyplot(fig)
+    
     fig, ax = plt.subplots(figsize=(18,12))
     #fig=plt.figure()
     #fig.tight_layout()
@@ -542,3 +558,4 @@ if uploaded_file is not None:
     st.text(kpi_load_text4)
     st.subheader("", divider = True)
     
+

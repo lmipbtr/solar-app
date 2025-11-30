@@ -5,6 +5,7 @@ import sys
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import datetime
+import calendar
 #from io import StringIO
 from matplotlib.dates import MonthLocator, YearLocator, DateFormatter
 from dateutil.relativedelta import relativedelta
@@ -301,6 +302,13 @@ if uploaded_file is not None:
     df_monthly_sums = df_generation_non_zero.groupby(df_generation_non_zero.Date.dt.to_period('M')).sum(numeric_only=True)#.plot.bar()#rename('Year'),df_generation_non_zero['Date'].dt.month.name().rename('Month')])['kWhs'].sum().reset_index())
     df_annual_sums = df_generation_non_zero.groupby(df_generation_non_zero.Date.dt.to_period('Y')).sum(numeric_only=True)#.plot.bar()#rename('Year'),df_generation_non_zero['Date'].dt.month.name().rename('Month')])['kWhs'].sum().reset_index())
 
+    df_monthly_grouped_sums = df_monthly_sums.copy().reset_index()
+    df_monthly_grouped_sums['Month'] = df_monthly_grouped_sums['Date'].dt.month#_name()
+    df_monthly_grouped_sums['Year'] = df_monthly_grouped_sums['Date'].dt.year
+    df_monthly_grouped = df_monthly_grouped_sums.groupby(['Month', 'Year'])['kWhs'].sum()
+    df_monthly_grouped = df_monthly_grouped.unstack(level='Year')
+    df_monthly_grouped.fillna(0, inplace=True)
+
     fig=plt.figure(figsize=(18,12))
     bplot1 = plt.bar(df_daily_total_kWhs['Date'], df_daily_total_kWhs['Load_kWh'], color='magenta', width=0.5, edgecolor='gray', label='Load kWh')
     bplot2 = plt.bar(df_daily_total_kWhs['Date'], df_daily_total_kWhs['Import_kWh'], color='cyan', width=0.5, edgecolor='gray', label='Imported kWh')
@@ -349,6 +357,25 @@ if uploaded_file is not None:
     fig, ax = plt.subplots(figsize=(18,12))
     #fig.tight_layout()
     fig.canvas.manager.set_window_title('Monthly kWhs')
+    df_monthly_grouped.plot(kind='bar', ax=ax)
+    for container in ax.containers:
+        ax.bar_label(container, fmt='%d', label_type='edge', padding=5, rotation = 45) # fmt='%d' for integer labels, 'edge' for outside the bar
+    ax.set_xticklabels(calendar.month_abbr[1:])
+    #bplot2=plt.bar(df_monthly_sums.index.to_timestamp(), df_monthly_sums.kWhs, width = 20)
+    #ax.xaxis.set_major_locator(MonthLocator())
+    #ax.xaxis.set_major_formatter(DateFormatter('%b-%Y'))
+    plt.xlabel('Month')
+    plt.ylabel('kWhs')
+    plt.xticks(rotation=45)
+    plt.title('Monthly Generated kWhs')
+    #plt.bar_label(bplot2,color='black',fmt='%.0f')
+    plt.grid(which='both', color='gray', linestyle='dashed')
+    
+    st.pyplot(fig)
+        
+    fig, ax = plt.subplots(figsize=(18,12))
+    #fig.tight_layout()
+    fig.canvas.manager.set_window_title('Monthly kWhs')
     bplot2=plt.bar(df_monthly_sums.index.to_timestamp(), df_monthly_sums.kWhs, width = 20)
     ax.xaxis.set_major_locator(MonthLocator())
     ax.xaxis.set_major_formatter(DateFormatter('%b-%Y'))
@@ -387,6 +414,8 @@ if uploaded_file is not None:
     ax1.margins(x=0)
     plt.title('Daily kWh Hourly Profiles')
     plt.grid(which='both', color='gray', linestyle='dashed', linewidth=0.5)
+    #pw.addPlot('Daily Profiles', fig)
+    #    plt.savefig(filepath+'Daily Profiles.png')
     plt.tight_layout(pad=0.8, w_pad=0.8, h_pad=1.0)
     
     st.pyplot(fig)
